@@ -1,1 +1,86 @@
+In [2]:import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+In [17]: # Load your dataset
+df = pd.read_csv(r'restaraunt.csv')  # Replace with your actual file path In [6]: # Drop rows with missing cuisine data
+df = df.dropna(subset=['Cuisines'])
+print(df)
+
+      Restaurant ID           Restaurant Name  Country Code              City  \ 0           6317637          Le Petit Souffle           162       Makati City   1           6304287          Izakaya Kikufuji           162       Makati City   2           6300002    Heat - Edsa Shangri-La           162  Mandaluyong City   3           6318506                      Ooma           162  Mandaluyong City   4           6314302               Sambo Kojin           162  Mandaluyong City   ...             ...                       ...           ...               ...   9546        5915730               Naml١ Gurme           208           stanbul   9547        5908749              Ceviz A  ac١           208           stanbul   9548        5915807                     Huqqa           208           stanbul   9549        5916112               A   k Kahve           208           stanbul   9550        5927402  Walter's Coffee Roastery           208           stanbul   
+                                                Address  \ 0     Third Floor, Century City Mall, Kalayaan Avenu...   1     Little Tokyo, 2277 Chino Roces Avenue, Legaspi...   2     Edsa Shangri-La, 1 Garden Way, Ortigas, Mandal...   
+3     Third Floor, Mega Fashion Hall, SM Megamall, O...   4     Third Floor, Mega Atrium, SM Megamall, Ortigas...   ...                                                 ...   9546  Kemanke   Karamustafa Pa  a Mahallesi, R١ht١m ...   9547  Ko  uyolu Mahallesi, Muhittin   st _nda   Cadd...   9548  Kuru _e  me Mahallesi, Muallim Naci Caddesi, N...   9549  Kuru _e  me Mahallesi, Muallim Naci Caddesi, N...   9550  Cafea  a Mahallesi, Bademalt١ Sokak, No 21/B, ...   
+                                        Locality  \ 0      Century City Mall, Poblacion, Makati City   1     Little Tokyo, Legaspi Village, Makati City   2     Edsa Shangri-La, Ortigas, Mandaluyong City   3         SM Megamall, Ortigas, Mandaluyong City   4         SM Megamall, Ortigas, Mandaluyong City   ...                                          ...   9546                                    Karak _y   9547                                   Ko  uyolu   9548                                 Kuru _e  me   9549                                 Kuru _e  me   9550                                        Moda   
+                                       Locality Verbose   Longitude  \ 0     Century City Mall, Poblacion, Makati City, Mak...  121.027535   1     Little Tokyo, Legaspi Village, Makati City, Ma...  121.014101   2     Edsa Shangri-La, Ortigas, Mandaluyong City, Ma...  121.056831   3     SM Megamall, Ortigas, Mandaluyong City, Mandal...  121.056475   4     SM Megamall, Ortigas, Mandaluyong City, Mandal...  121.057508   ...                                                 ...         ...   9546                                Karak _y,   stanbul   28.977392   9547                               Ko  uyolu,   stanbul   29.041297   9548                             Kuru _e  me,   stanbul   29.034640   9549                             Kuru _e  me,   stanbul   29.036019   
+9550                                    Moda,   stanbul   29.026016   
+       Latitude                          Cuisines  ...          Currency  \ 0     14.565443        French, Japanese, Desserts  ...  Botswana Pula(P)   1     14.553708                          Japanese  ...  Botswana Pula(P)   2     14.581404  Seafood, Asian, Filipino, Indian  ...  Botswana Pula(P)   3     14.585318                   Japanese, Sushi  ...  Botswana Pula(P)   4     14.584450                  Japanese, Korean  ...  Botswana Pula(P)   ...         ...                               ...  ...               ...   
+9546  41.022793                           Turkish  ...  Turkish Lira(TL)   
+
+9547  41.009847   World Cuisine, Patisserie, Cafe  ...  Turkish Lira(TL)   9548  41.055817            Italian, World Cuisine  ...  Turkish Lira(TL)   9549  41.057979                   Restaurant Cafe  ...  Turkish Lira(TL)   9550  40.984776                              Cafe  ...  Turkish Lira(TL)   
+     Has Table booking Has Online delivery Is delivering now  \ 0                  Yes                  No                No   1                  Yes                  No                No   2                  Yes                  No                No   3                   No                  No                No   4                  Yes                  No                No   ...                ...                 ...               ...   9546                No                  No                No   9547                No                  No                No   9548                No                  No                No   9549                No                  No                No   9550                No                  No                No   
+     Switch to order menu Price range  Aggregate rating  Rating color  \ 0                      No           3               4.8    Dark Green   1                      No           3               4.5    Dark Green   2                      No           4               4.4         Green   3                      No           4               4.9    Dark Green   4                      No           4               4.8    Dark Green   ...                   ...         ...               ...           ...   9546                   No           3               4.1         Green   9547                   No           3               4.2         Green   9548                   No           4               3.7        Yellow   9549                   No           4               4.0         Green   9550                   No           2               4.0         Green   
+     Rating text Votes  0      Excellent   314  1      Excellent   591  2      Very Good   270  3      Excellent   365  4      Excellent   229  ...          ...   ...  9546   Very Good   788  9547   Very Good  1034  9548        Good   661  9549   Very Good   901  9550   Very Good   591  
+[9542 rows x 21 columns]
+
+In [8]: # Split multiple cuisines and count each
+cuisine_series = df['Cuisines'].str.split(',').explode().str.strip() cuisine_counts = cuisine_series.value_counts() print(cuisine_counts)
+
+Cuisines
+North Indian      3960 Chinese           2735 Fast Food         1986 Mughlai            995
+Italian            764
+                  ... 
+Cuisine Varies       1
+Fish and Chips       1
+Durban               1
+D _ner               1
+B _rek               1
+Name: count, Length: 145, dtype: int64
+
+In [11]: # Get top 3 cuisines
+top_cuisines = cuisine_counts.head(3) df.head(3)
+
+Restaurant Restaurant Country City Address Locality Locality ID Name Code Verbose
+Third
+Floor, Century City Century City Le Petit Century Mall, Mall,
+0	 6317637 Souffle 162 Makati City City Poblacion, Poblacion, Mall, Makati City Makati City, Kalayaan Mak... Avenu...
+Little
+Tokyo, Little Tokyo, 2277 Little TLegaspiokyo, Legaspi
+1	 6304287 KikufujiIzakaya 162 Makati City Chino Village, Village, Roces Makati City Makati City,
+Avenue, Ma... Legaspi...
+Edsa
+Shangri-
+La, 1 Edsa Shangri- Edsa Shangri-La, Ortigas,
+2	 6300002 Heat - EdsaShangri-La 162 MandaluyongCity Garden MandaluyongLa, Ortigas, Mandaluyong Way, City City, Ma...
+Ortigas,
+Mandal...
+3 rows × 21 columns
+
+
+In [12]: # Calculate percentage of restaurants serving each top cuisine
+total_restaurants = len(df)
+top_cuisine_percentages = (top_cuisines / total_restaurants) * 100 print(top_cuisine_percentages)
+
+Cuisines
+North Indian    41.500734 Chinese         28.662754 Fast Food       20.813247 Name: count, dtype: float64
+
+
+In [13]: # Prepare data for visualization
+top_cuisine_df = pd.DataFrame({
+    'Cuisine': top_cuisine_percentages.index,
+    'Percentage': top_cuisine_percentages.values })
+print(top_cuisine_df)
+       
+Cuisine  Percentage 0  North Indian   41.500734 1       Chinese   28.662754
+2     Fast Food   20.813247
+
+
+In [14]: # Plotting
+sns.set(style="whitegrid")
+plt.figure(figsize=(8, 6))
+sns.barplot(data=top_cuisine_df, x='Cuisine', y='Percentage', hue='Cuisine', pal plt.title('Top Cuisines by Percentage of Restaurants', fontsize=14) plt.ylabel('Percentage (%)')
+plt.xlabel('Cuisine')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
 
